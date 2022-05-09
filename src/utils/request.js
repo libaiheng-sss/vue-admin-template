@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
-import { getToken } from '@/utils/auth'
+import { getToken, setToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
@@ -14,7 +14,10 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // do something before request is sent
-
+    if (config.url === '/login') {
+      config.params.grant_type = 'password'
+      // config.headers['Authorization'] = 'Basic Q1lfQ29udHJvbF9iYWNrX3N5c3RlbTpDWV9Db250cm9sX3BzXzFxYTJ3cw=='
+    }
     if (store.getters.token) {
       // let each request carry token
       // ['X-Token'] is a custom headers key
@@ -44,9 +47,8 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-
     // if the custom code is not 20000, it is judged as an error.
-    if (res.code !== 20000) {
+    if (res.code !== '200' && res.code !== '2000') {
       Message({
         message: res.message || 'Error',
         type: 'error',

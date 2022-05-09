@@ -33,9 +33,10 @@ const actions = {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
+        debugger
+        // const { data } = response
+        commit('SET_TOKEN', response.access_token)
+        setToken(response.access_token)
         resolve()
       }).catch(error => {
         reject(error)
@@ -46,21 +47,51 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
-
-        if (!data) {
-          return reject('Verification failed, please Login again.')
+      const {
+        data
+      } = {
+        data: {
+          roles: ['admin'],
+          introduction: 'Administrator',
+          avatar: 'https://cloud.xiaoxingbobo.top/nongzhibang/20210429/1107491622257669573',
+          name: 'administrator'
         }
+      }
+      if (!data) {
+        return reject('Verification failed, please Login again.')
+      }
 
-        const { name, avatar } = data
+      const { name, avatar } = data
 
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
+      commit('SET_NAME', name)
+      commit('SET_AVATAR', avatar)
+      resolve(data)
+      // getInfo(state.token).then(response => {
+      //   debugger
+      //   // const { data } = response
+      //   const {
+      //     data
+      //   } = {
+      //     data: {
+      //       roles: ['admin'],
+      //       introduction: 'Administrator',
+      //       avatar: 'https://cloud.xiaoxingbobo.top/nongzhibang/20210429/1107491622257669573',
+      //       name: 'administrator'
+      //     }
+      //   }
+      //   if (!data) {
+      //     return reject('Verification failed, please Login again.')
+      //   }
+      //
+      //   const { name, avatar } = data
+      //
+      //   commit('SET_NAME', name)
+      //   commit('SET_AVATAR', avatar)
+      //   resolve(data)
+      // }).catch(error => {
+      //   debugger
+      //   reject(error)
+      // })
     })
   },
 

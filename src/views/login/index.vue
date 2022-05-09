@@ -48,6 +48,7 @@
 
 <script>
 import { validUsername } from '@/utils/validate'
+import { login } from '@/api/user'
 
 export default {
   name: 'Login',
@@ -60,8 +61,8 @@ export default {
       }
     }
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('密码必须大于6位'))
+      if (value.length < 4) {
+        callback(new Error('密码必须大于4位'))
       } else {
         callback()
       }
@@ -103,12 +104,34 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
-            this.loading = false
-          }).catch(() => {
-            this.loading = false
-          })
+          this.$store.dispatch('user/login', this.loginForm)
+            .then(() => {
+              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              this.loading = false
+            })
+            .catch(() => {
+              this.loading = false
+            })
+          // login(this.loginForm).then(response => {
+          //   debugger
+          //   if (response.code === '2000') {
+          //     this.$message({
+          //       message: '登录成功',
+          //       type: 'success'
+          //     })
+          //     this.$router.push('/')
+          //   }
+          //   this.loading = false
+          // }).catch(() => {
+          //   this.loading = false
+          // })
+          this.$router.push('/')
+          // this.$store.dispatch('/login', this.loginForm).then(() => {
+          //   this.$router.push({ path: this.redirect || '/' })
+          //   this.loading = false
+          // }).catch(() => {
+          //   this.loading = false
+          // })
         } else {
           console.log('error submit!!')
           return false
