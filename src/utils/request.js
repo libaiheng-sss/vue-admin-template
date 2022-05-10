@@ -2,6 +2,7 @@ import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken, setToken } from '@/utils/auth'
+import de from "element-ui/src/locale/lang/de";
 
 // create an axios instance
 const service = axios.create({
@@ -46,6 +47,7 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
+    debugger
     const res = response.data
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== '200' && res.code !== '2000') {
