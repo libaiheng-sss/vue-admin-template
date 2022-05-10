@@ -35,7 +35,7 @@ const actions = {
       login({ username: username.trim(), password: password }).then(response => {
         debugger
         // const { data } = response
-        commit('SET_TOKEN', response.access_token)
+        commit('SET_TOKEN', 'Bearer ' + response.access_token)
         setToken(response.access_token)
         resolve()
       }).catch(error => {
@@ -47,51 +47,22 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      const {
-        data
-      } = {
-        data: {
-          roles: ['admin'],
-          introduction: 'Administrator',
-          avatar: 'https://cloud.xiaoxingbobo.top/nongzhibang/20210429/1107491622257669573',
-          name: 'administrator'
+      getInfo(state.token).then(response => {
+        debugger
+        const { data } = response
+        if (!data) {
+          return reject('Verification failed, please Login again.')
         }
-      }
-      if (!data) {
-        return reject('Verification failed, please Login again.')
-      }
 
-      const { name, avatar } = data
+        const { username, avatar } = data
 
-      commit('SET_NAME', name)
-      commit('SET_AVATAR', avatar)
-      resolve(data)
-      // getInfo(state.token).then(response => {
-      //   debugger
-      //   // const { data } = response
-      //   const {
-      //     data
-      //   } = {
-      //     data: {
-      //       roles: ['admin'],
-      //       introduction: 'Administrator',
-      //       avatar: 'https://cloud.xiaoxingbobo.top/nongzhibang/20210429/1107491622257669573',
-      //       name: 'administrator'
-      //     }
-      //   }
-      //   if (!data) {
-      //     return reject('Verification failed, please Login again.')
-      //   }
-      //
-      //   const { name, avatar } = data
-      //
-      //   commit('SET_NAME', name)
-      //   commit('SET_AVATAR', avatar)
-      //   resolve(data)
-      // }).catch(error => {
-      //   debugger
-      //   reject(error)
-      // })
+        commit('SET_NAME', username)
+        commit('SET_AVATAR', avatar)
+        resolve(data)
+      }).catch(error => {
+        debugger
+        reject(error)
+      })
     })
   },
 
