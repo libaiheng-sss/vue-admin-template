@@ -32,6 +32,14 @@
           {{ scope.row.email }}
         </template>
       </el-table-column>
+      <el-table-column label="状态" align="center">
+        <template slot-scope="scope">
+          <el-tag type="success" v-if="scope.row.status === 0">启用</el-tag>
+          <el-tag type="warning" v-else-if="scope.row.status === 1">停用</el-tag>
+          <el-tag type="danger"  v-else-if="scope.row.status === 2">删除</el-tag>
+          <el-tag type="danger"  v-else>无状态</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="更新时间" align="center">
         <template slot-scope="scope">
           {{ scope.row.updateTime }}
@@ -40,6 +48,12 @@
       <el-table-column label="创建时间" align="center">
         <template slot-scope="scope">
           {{ scope.row.createTime }}
+        </template>
+      </el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope" width="100px">
+          <el-button size="mini" type="danger" @click="deleteUser(scope.row.id)" v-if="scope.row.status === 0 || scope.row.status === 1" :loading="deleteUserLoading">删除</el-button>
+          <el-button size="mini" type="success" @click="deleteUser(scope.row.id)" v-if="scope.row.status === 1 || scope.row.status === 2">启用</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -66,7 +80,7 @@
 </template>
 
 <script>
-import { userList, createUser } from '@/api/user'
+import { userList, createUser, deleteUser } from '@/api/user'
 
 export default {
   filters: {
@@ -85,6 +99,7 @@ export default {
       listLoading: true,
       dialogFormVisible: false,
       addUserLoading: false,
+      deleteUserLoading: false,
       form: {
         username: '',
         phoneNumber: '',
@@ -116,6 +131,29 @@ export default {
         this.addUserLoading = false
         this.dialogFormVisible = false
       })
+    },
+    deleteUser(id) {
+      this.deleteUserLoading = true
+      this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteUser({ 'id': id }).then(response => {
+          if (response.code === '200') {
+            this.$message('删除用户成功')
+          }
+          this.deleteUserLoading = false
+        }).catch(() => {
+          this.deleteUserLoading = false
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+
     }
 
   }

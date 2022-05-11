@@ -76,7 +76,27 @@ export const constantRoutes = [
       }
     ]
   },
-
+  {
+    path: '/agent',
+    component: Layout,
+    redirect: '/agent/online',
+    name: '代理',
+    meta: { title: '代理', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'online',
+        name: '线上业绩',
+        component: () => import('@/views/user/user_list'),
+        meta: { title: '线上业绩', icon: 'table' }
+      },
+      {
+        path: 'offline',
+        name: '线下业绩',
+        component: () => import('@/views/tree/index'),
+        meta: { title: '线下业绩', icon: 'tree' }
+      }
+    ]
+  },
   {
     path: '/user',
     component: Layout,
@@ -98,6 +118,7 @@ export const constantRoutes = [
       }
     ]
   },
+
 
   {
     path: '/form',

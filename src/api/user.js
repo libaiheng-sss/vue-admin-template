@@ -49,7 +49,7 @@ export function updataUser(data) {
 export function deleteUser(data) {
   return request({
     url: '/user/deleteUser',
-    method: 'post',
-    data: data
+    method: 'delete',
+    params: data
   })
 }
