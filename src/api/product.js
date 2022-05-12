@@ -23,3 +23,11 @@ export function getList(data) {
     data: data
   })
 }
+
+export function getChildrenList(data) {
+  return request({
+    url: '/product/getChildrenList',
+    method: 'post',
+    data: data
+  })
+}
