@@ -60,9 +60,9 @@
       <el-table-column prop="createTime" label="创建时间"></el-table-column>
       <el-table-column label="操作" align="center" width="250px">
         <template slot-scope="scope" >
+          <el-button size="mini" type="success" @click="addProduct(scope.row.id)" :loading="deleteProductLoading">新增</el-button>
+          <el-button size="mini" type="primary" @click="updateProduct(scope.row.id)" :loading="deleteProductLoading">修改</el-button>
           <el-button size="mini" type="danger" @click="deleteProduct(scope.row.id)" :loading="deleteProductLoading">删除</el-button>
-          <el-button size="mini" type="danger" @click="deleteProduct(scope.row.id)" :loading="deleteProductLoading">新增</el-button>
-          <el-button size="mini" type="danger" @click="deleteProduct(scope.row.id)" :loading="deleteProductLoading">修改</el-button>
         </template>
       </el-table-column>
     </el-table>

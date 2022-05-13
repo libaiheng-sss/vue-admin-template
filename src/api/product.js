@@ -8,6 +8,14 @@ export function addProduct(data) {
   })
 }
 
+export function updateProduct(data) {
+  return request({
+    url: '/product/update',
+    method: 'delete',
+    data: data
+  })
+}
+
 export function deleteProduct(data) {
   return request({
     url: '/product/delete',
