@@ -57,22 +57,40 @@ export const constantRoutes = [
   {
     path: '/agent',
     component: Layout,
-    redirect: '/agent/online',
+    redirect: '/agent/personal_online',
     name: '代理',
     meta: { title: '代理', icon: 'el-icon-s-help' },
     children: [
       {
-        path: 'online',
-        name: '线上业绩',
-        component: () => import('@/views/user/user_list'),
-        meta: { title: '线上业绩', icon: 'table' }
+        path: 'personal_online',
+        name: '个人线上业绩',
+        component: () => import('@/views/agent/personal_online'),
+        meta: { title: '个人线上业绩', icon: 'table' }
       },
       {
-        path: 'offline',
-        name: '线下业绩',
-        component: () => import('@/views/tree/index'),
-        meta: { title: '线下业绩', icon: 'tree' }
+        path: 'team_online',
+        name: '团队线上业绩',
+        component: () => import('@/views/agent/team_online'),
+        meta: { title: '团队线上业绩', icon: 'table' }
+      },
+      {
+        path: 'all_online',
+        name: '线上业绩报表',
+        component: () => import('@/views/agent/all_online'),
+        meta: { title: '线上业绩报表', icon: 'table' }
+      },
+      {
+        path: 'add_online',
+        name: '添加线上业绩',
+        component: () => import('@/views/agent/add_online'),
+        meta: { title: '添加线上业绩', icon: 'table' }
       }
+      // {
+      //   path: 'offline',
+      //   name: '线下业绩',
+      //   component: () => import('@/views/tree/index'),
+      //   meta: { title: '线下业绩', icon: 'tree' }
+      // }
     ]
   },
   {

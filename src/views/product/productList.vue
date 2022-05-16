@@ -3,46 +3,6 @@
     <div class="filter-container" style="margin-bottom: 5px;">
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" size="mini" @click="dialogFormVisible = true">添加产品</el-button>
     </div>
-<!--    <el-table-->
-<!--      v-loading="listLoading"-->
-<!--      :data="list"-->
-<!--      element-loading-text="Loading"-->
-<!--      border-->
-<!--      fit-->
-<!--      style="width: 100%;"-->
-<!--      highlight-current-row-->
-<!--    >-->
-<!--      <el-table-column align="center" label="ID" width="95">-->
-<!--        <template slot-scope="scope">-->
-<!--          {{ scope.row.id }}-->
-<!--        </template>-->
-<!--      </el-table-column>-->
-<!--      <el-table-column label="产品名称" align="center">-->
-<!--        <template slot-scope="scope">-->
-<!--          {{ scope.row.productName }}-->
-<!--        </template>-->
-<!--      </el-table-column>-->
-<!--      <el-table-column label="产品编码" align="center">-->
-<!--        <template slot-scope="scope">-->
-<!--          <span>{{ scope.row.productCode }}</span>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
-<!--      <el-table-column label="描述" align="center">-->
-<!--        <template slot-scope="scope">-->
-<!--          {{ scope.row.description }}-->
-<!--        </template>-->
-<!--      </el-table-column>-->
-<!--      <el-table-column label="创建时间" align="center">-->
-<!--        <template slot-scope="scope">-->
-<!--          {{ scope.row.createTime }}-->
-<!--        </template>-->
-<!--      </el-table-column>-->
-<!--      <el-table-column label="操作" align="center" width="150px">-->
-<!--        <template slot-scope="scope" >-->
-<!--          <el-button size="mini" type="danger" @click="deleteProduct(scope.row.id)" :loading="deleteProductLoading">删除</el-button>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
-<!--    </el-table>-->
     <el-table
       :data="list"
       style="width: 100%"
@@ -50,52 +10,86 @@
       border
       lazy
       :load="load"
-      :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
-      <el-table-column prop="id" label="ID" width="180"></el-table-column>
-      <el-table-column prop="parentId" label="父级ID" width="180"></el-table-column>
-      <el-table-column prop="productName" label="产品名称" width="180"></el-table-column>
-      <el-table-column prop="productCode" label="产品编码"></el-table-column>
-      <el-table-column prop="price" label="产品价格"></el-table-column>
-      <el-table-column prop="description" label="产品描述"></el-table-column>
-      <el-table-column prop="createTime" label="创建时间"></el-table-column>
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+    >
+      <el-table-column prop="id" label="ID" width="180" />
+      <el-table-column prop="parentId" label="父级ID" width="180" />
+      <el-table-column prop="productName" label="产品名称" width="180" />
+      <el-table-column prop="productCode" label="产品编码" />
+      <el-table-column prop="price" label="产品价格" />
+      <el-table-column prop="description" label="产品描述" />
+      <el-table-column prop="createTime" label="创建时间" />
+      <el-table-column label="状态" align="center" >
+        <template slot-scope="scope">
+          <el-tag type="success" v-show="scope.row.status === 0">上架</el-tag>
+          <el-tag type="danger" v-show="scope.row.status === 1">下架</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" width="250px">
-        <template slot-scope="scope" >
-          <el-button size="mini" type="success" @click="addProduct(scope.row.id)" :loading="deleteProductLoading">新增</el-button>
-          <el-button size="mini" type="primary" @click="updateProduct(scope.row.id)" :loading="deleteProductLoading">修改</el-button>
-          <el-button size="mini" type="danger" @click="deleteProduct(scope.row.id)" :loading="deleteProductLoading">删除</el-button>
+        <template slot-scope="scope">
+          <el-button size="mini" type="success"  @click="addChildren(scope.row.id)">新增</el-button>
+          <el-button size="mini" type="primary"  @click="updateDialog(scope.row)">修改</el-button>
+          <el-button size="mini" type="danger"  @click="deleteProduct(scope.row)">下架</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
       :current-page="currentPage"
       :page-sizes="[10, 15, 20, 30]"
       :page-size="listQuery.limit"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="total">
-    </el-pagination>
+      :total="total"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
 
-    <el-dialog title="新产品" :visible.sync="dialogFormVisible" width="30%"  >
-      <el-form :model="form">
+    <el-dialog title="新产品" :visible.sync="dialogFormVisible" width="30%">
+      <el-form ref="form" :model="form">
+        <el-form-item label="父节点Id" :label-width="formLabelWidth">
+          <el-input v-model="form.parentId" readonly autocomplete="off" />
+        </el-form-item>
         <el-form-item label="产品名" :label-width="formLabelWidth">
-          <el-input v-model="form.productName" autocomplete="off"></el-input>
+          <el-input v-model="form.productName" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="价格" :label-width="formLabelWidth">
+          <el-input type="number" v-model="form.price" autocomplete="off" />
         </el-form-item>
         <el-form-item label="描述" :label-width="formLabelWidth">
-          <el-input v-model="form.description" autocomplete="off"></el-input>
+          <el-input v-model="form.description" autocomplete="off" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false,addProductLoading=false">取 消</el-button>
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" :loading="addProductLoading" @click="addProduct">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog title="修改" :visible.sync="updateDialogFormVisible" width="30%">
+      <el-form ref="form" :model="form">
+        <el-form-item label="父节点Id" :label-width="formLabelWidth">
+          <el-input v-model="form.parentId" readonly autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="产品名" :label-width="formLabelWidth">
+          <el-input v-model="form.productName" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="价格" :label-width="formLabelWidth">
+          <el-input v-model="form.price" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="描述" :label-width="formLabelWidth">
+          <el-input v-model="form.description" autocomplete="off" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="updateDialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" :loading="updateProductLoading" @click="updateProduct">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { addProduct, getList, deleteProduct,getChildrenList } from '@/api/product'
+import { addProduct, getList, deleteProduct, getChildrenList, updateProduct } from '@/api/product'
 
 export default {
   filters: {
@@ -110,22 +104,26 @@ export default {
   },
   data() {
     return {
-      list: null,
+      list: [],
       listLoading: true,
-      total: '',
+      total: null,
       listQuery: {
         page: 1,
         limit: 10,
         phoneNumber: '',
         status: ''
       },
-      currentPage: '',
+      currentPage: null,
       dialogFormVisible: false,
+      updateDialogFormVisible: false,
       addProductLoading: false,
-      deleteUserLoading: false,
+      updateProductLoading: false,
       form: {
+        id: '',
+        parentId: '',
         productName: '',
-        description: ''
+        description: '',
+        price: ''
       },
       formLabelWidth: '80px'
     }
@@ -156,6 +154,20 @@ export default {
       this.listQuery.page = val
       this.fetchData()
     },
+    addChildren(parentId) {
+      this.clearForm()
+      this.form.parentId = parentId
+      this.dialogFormVisible = true
+    },
+    updateDialog(row) {
+      this.clearForm()
+      this.form.id = row.id
+      this.form.parentId = row.parentId
+      this.form.productName = row.productName
+      this.form.description = row.description
+      this.form.price = row.price
+      this.updateDialogFormVisible = true
+    },
     addProduct() {
       this.addProductLoading = true
       addProduct(this.form).then(response => {
@@ -170,21 +182,37 @@ export default {
         this.dialogFormVisible = false
       })
     },
-    deleteProduct(id) {
-      this.deleteUserLoading = true
+    updateProduct() {
+      this.updateProductLoading = true
+      updateProduct(this.form).then(response => {
+        debugger
+        if (response.code === '200') {
+          this.$message('修改用户成功')
+          this.fetchData()
+        }
+        this.updateProductLoading = false
+        this.updateDialogFormVisible = false
+      }).catch(() => {
+        this.updateProductLoading = false
+        this.updateDialogFormVisible = false
+      })
+    },
+    deleteProduct(row) {
       this.$confirm('此操作将删除该条记录, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteProduct({ 'id': id }).then(response => {
+        deleteProduct({ 'id': row.id }).then(response => {
           if (response.code === '200') {
             this.$message('删除成功')
-            this.fetchData()
+            row.status = 1
           }
-          this.deleteUserLoading = false
         }).catch(() => {
-          this.deleteUserLoading = false
+          this.$message({
+            type: 'info',
+            message: '删除失败'
+          })
         })
       }).catch(() => {
         this.$message({
@@ -195,9 +223,15 @@ export default {
     },
     load(tree, treeNode, resolve) {
       getChildrenList({ 'id': tree.id }).then(response => {
-        debugger
         resolve(response.data)
       })
+    },
+    clearForm() {
+      this.form.id = ''
+      this.form.price = ''
+      this.form.description = ''
+      this.form.parentId = ''
+      this.form.productName = ''
     }
 
   }
