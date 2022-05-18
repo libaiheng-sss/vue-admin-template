@@ -1,113 +1,125 @@
 <template>
   <div class="app-container">
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+    <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="100px" class="demo-ruleForm">
       <el-divider>客户信息</el-divider>
       <el-row :gutter="20">
         <el-col :span="9">
-            <el-form-item label="用户名：" prop="username">
-              <el-input  v-model="ruleForm.name" style="width: 50%;"></el-input>
-            </el-form-item>
-            <el-form-item label="性别：" prop="username">
-              <el-radio v-model="radio" label="1">男</el-radio>
-              <el-radio v-model="radio" label="2">女</el-radio>
-            </el-form-item>
-            <el-form-item label="手机号：" prop="username">
-              <el-input v-model="ruleForm.name" style="width: 50%;"></el-input>
-            </el-form-item>
-            <el-form-item label="邮箱：" prop="username">
-              <el-input v-model="ruleForm.name" style="width: 50%;"></el-input>
-            </el-form-item>
+          <el-form-item label="用户名：" prop="username">
+            <el-input v-model="ruleForm.username" style="width: 50%;" />
+          </el-form-item>
+          <el-form-item label="性别：" prop="username">
+            <el-radio v-model="ruleForm.gender" label="1">男</el-radio>
+            <el-radio v-model="ruleForm.gender" label="0">女</el-radio>
+          </el-form-item>
+          <el-form-item label="手机号：" prop="username">
+            <el-input v-model="ruleForm.phoneNumber" style="width: 50%;" />
+          </el-form-item>
+          <el-form-item label="邮箱：" prop="username">
+            <el-input v-model="ruleForm.email" style="width: 50%;" />
+          </el-form-item>
         </el-col>
         <el-col :span="15">
           <el-form-item label="选择省市区：" prop="username">
             <el-row :gutter="20">
               <el-col :span="5">
-                <div class="block">
-                  <el-cascader
-                    v-model="value"
-                    :options="options"
-                    @change="handleChange"></el-cascader>
-                </div>
+                <el-select v-model="ruleForm.province" filterable placeholder="请选择省份" @change="changeProvince">
+                  <el-option
+                    v-for="item in provinceOption"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.provinceCode"
+                  />
+                </el-select>
               </el-col>
               <el-col :span="5">
-                <div class="block">
-                  <el-cascader
-                    v-model="value"
-                    :options="options"
-                    @change="handleChange"></el-cascader>
-                </div>
+                <el-select v-model="ruleForm.city" filterable placeholder="请选择城市" @change="changeCity">
+                  <el-option
+                    v-for="item in cityOption"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.cityCode"
+                  />
+                </el-select>
               </el-col>
               <el-col :span="5">
-                <div class="block">
-                  <el-cascader
-                    v-model="value"
-                    :options="options"
-                    :props="{ expandTrigger: 'hover' }"
-                    @change="handleChange"></el-cascader>
-                </div>
+                <el-select v-model="ruleForm.district" filterable placeholder="请选择区县">
+                  <el-option
+                    v-for="item in countyOption"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.countyCode"
+                  />
+                </el-select>
               </el-col>
-              <el-col :span="9">
-              </el-col>
+              <el-col :span="9" />
             </el-row>
           </el-form-item>
           <el-form-item label="详细地址：" prop="username">
             <el-input
+              v-model="ruleForm.detailedAddress"
               type="textarea"
               :rows="2"
-              placeholder="请输入内容"
-              v-model="textarea">
-            </el-input>
+              placeholder="请输入详细地址"
+            />
           </el-form-item>
           <el-form-item label="用户备注：" prop="username">
             <el-input
+              v-model="ruleForm.description"
               type="textarea"
               :rows="2"
-              placeholder="请输入内容"
-              v-model="textarea">
-            </el-input>
+              placeholder="请输入用户备注"
+            />
           </el-form-item>
         </el-col>
       </el-row>
+
       <el-divider>订单信息</el-divider>
-      <el-form-item label="活动区域" prop="region">
-        <el-select v-model="ruleForm.region" placeholder="请选择活动区域">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="活动时间" required>
-        <el-col :span="11">
-          <el-form-item prop="date1">
-            <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.date1" style="width: 100%;"></el-date-picker>
+      <el-row :gutter="10">
+        <el-col :span="8">
+          <el-form-item label="选择产品" prop="region">
+            <el-cascader
+              ref="cascaderAddr"
+              :options="options"
+              :props="{ checkStrictly: true }"
+              clearable
+              @change="getCheckedNodes"
+            />
           </el-form-item>
         </el-col>
-        <el-col class="line" :span="2">-</el-col>
-        <el-col :span="11">
-          <el-form-item prop="date2">
-            <el-time-picker placeholder="选择时间" v-model="ruleForm.date2" style="width: 100%;"></el-time-picker>
+        <el-col :span="8">
+          <el-form-item label="产品数量" prop="region">
+            <el-input-number v-model="ruleForm.productCount" type="number" style="width: 50%;" @change="changeCount" />
           </el-form-item>
         </el-col>
-      </el-form-item>
-      <el-form-item label="即时配送" prop="delivery">
-        <el-switch v-model="ruleForm.delivery"></el-switch>
-      </el-form-item>
-      <el-form-item label="活动性质" prop="type">
-        <el-checkbox-group v-model="ruleForm.type">
-          <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-          <el-checkbox label="地推活动" name="type"></el-checkbox>
-          <el-checkbox label="线下主题活动" name="type"></el-checkbox>
-          <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
-        </el-checkbox-group>
-      </el-form-item>
-      <el-form-item label="特殊资源" prop="resource">
-        <el-radio-group v-model="ruleForm.resource">
-          <el-radio label="线上品牌商赞助"></el-radio>
-          <el-radio label="线下场地免费"></el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="活动形式" prop="desc">
-        <el-input type="textarea" v-model="ruleForm.desc"></el-input>
-      </el-form-item>
+        <el-col :span="8">
+          <el-form-item label="总价" prop="region">
+            <el-input v-model="ruleForm.productAmountTotal" type="number" readonly style="width: 50%;" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row :gutter="10">
+        <el-col :span="8">
+          <el-form-item label="实际付款" prop="region">
+            <el-input v-model="ruleForm.orderAmountTotal" type="number" style="width: 50%;" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="运费金额" prop="region">
+            <el-input v-model="ruleForm.logisticsFee" type="number" style="width: 50%;" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="备注" prop="region">
+            <el-input
+              v-model="ruleForm.desc"
+              type="textarea"
+              :rows="2"
+              placeholder="请输入用户备注"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
@@ -118,19 +130,38 @@
 
 <script>
 
+import { province, city, county } from '@/api/districts'
+import { getOrderProductList, getProductAmountTotal } from '@/api/product'
+
 export default {
   data() {
     return {
       ruleForm: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
+        username: '',
+        gender: '0',
+        phoneNumber: '',
+        email: '',
+        province: '',
+        city: '',
+        district: '',
+        detailedAddress: '',
+        description: '',
+        productCount: 1,
+        price: '',
+        productAmountTotal: '0.0',
+        orderAmountTotal: '0.0',
+        logisticsFee: '0.0',
         desc: ''
       },
+      provinceOption: [],
+      cityOption: [],
+      countyOption: [],
+      options: [{
+        value: 12,
+        label: `选项1`,
+        leaf: 1
+      }],
+      value: '',
       rules: {
         name: [
           { required: true, message: '请输入活动名称', trigger: 'blur' },
@@ -155,21 +186,88 @@ export default {
           { required: true, message: '请填写活动形式', trigger: 'blur' }
         ]
       }
-    };
+    }
+  },
+  created() {
+    this.fetchData()
+    this.fetchData2()
   },
   methods: {
+    fetchData() {
+      this.listLoading = true
+      province().then(response => {
+        if (response.code === '200') {
+          this.provinceOption = response.data
+        }
+        this.listLoading = false
+      })
+    },
+    fetchData2() {
+      this.listLoading = true
+      getOrderProductList().then(response => {
+        if (response.code === '200') {
+          this.options = response.data
+        }
+        this.listLoading = false
+      })
+    },
+    changeProvince() {
+      city({ 'provinceCode': this.ruleForm.province }).then(response => {
+        if (response.code === '200') {
+          this.cityOption = response.data
+          this.ruleForm.city = ''
+          this.ruleForm.district = ''
+        }
+      })
+    },
+    changeCity() {
+      county({ 'provinceCode': this.ruleForm.province, 'cityCode': this.ruleForm.city }).then(response => {
+        if (response.code === '200') {
+          this.countyOption = response.data
+          this.ruleForm.district = ''
+        }
+      })
+    },
+    getCheckedNodes() {
+      const labelData = this.$refs.cascaderAddr.getCheckedNodes()[0]
+      this.ruleForm.price = labelData.data.price
+      getProductAmountTotal({ 'price': this.ruleForm.price, 'count': this.ruleForm.productCount }).then(response => {
+        if (response.code === '200') {
+          this.ruleForm.productAmountTotal = response.data
+        }
+      }).catch(() => {
+        this.$message('计算总价失败')
+        this.ruleForm.productAmountTotal = '0.00'
+      })
+    },
+    changeCount() {
+      if (this.ruleForm.productCount < 1) {
+        this.$message('数量不能小于0')
+        return
+      } else {
+        getProductAmountTotal({ 'price': this.ruleForm.price, 'count': this.ruleForm.productCount }).then(response => {
+          if (response.code === '200') {
+            this.ruleForm.productAmountTotal = response.data
+          }
+        }).catch(() => {
+          this.$message('计算总价失败')
+          this.ruleForm.productAmountTotal = '0.00'
+        })
+      }
+    },
+
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!');
+          alert('submit!')
         } else {
-          console.log('error submit!!');
-          return false;
+          console.log('error submit!!')
+          return false
         }
-      });
+      })
     },
     resetForm(formName) {
-      this.$refs[formName].resetFields();
+      this.$refs[formName].resetFields()
     }
   }
 }

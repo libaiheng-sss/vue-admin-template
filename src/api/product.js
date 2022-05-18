@@ -39,3 +39,17 @@ export function getChildrenList(data) {
     data: data
   })
 }
+export function getOrderProductList() {
+  return request({
+    url: '/product/getOrderProductList',
+    method: 'post'
+  })
+}
+
+export function getProductAmountTotal(data) {
+  return request({
+    url: '/product/getProductAmountTotal',
+    method: 'post',
+    data: data
+  })
+}
