@@ -132,6 +132,7 @@
 
 import { province, city, county } from '@/api/districts'
 import { getOrderProductList, getProductAmountTotal } from '@/api/product'
+import { addOrderAndCustomer } from '@/api/order'
 
 export default {
   data() {
@@ -255,16 +256,27 @@ export default {
         })
       }
     },
-
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          alert('submit!')
-        } else {
-          console.log('error submit!!')
-          return false
+    addOrderAndCustomer() {
+      addOrderAndCustomer(this.ruleForm).then(response => {
+        if (response.code === '200') {
+          this.$message('添加成功')
         }
       })
+    },
+    submitForm(formName) {
+      addOrderAndCustomer(this.ruleForm).then(response => {
+        if (response.code === '200') {
+          this.$message('添加成功')
+        }
+      })
+      // this.$refs[formName].validate((valid) => {
+      //   if (valid) {
+      //     alert('submit!')
+      //   } else {
+      //     console.log('error submit!!')
+      //     return false
+      //   }
+      // })
     },
     resetForm(formName) {
       this.$refs[formName].resetFields()
