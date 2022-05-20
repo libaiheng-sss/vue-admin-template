@@ -55,35 +55,62 @@ export const constantRoutes = [
     }]
   },
   {
+    path: '/customer',
+    component: Layout,
+    redirect: '/customer/personal',
+    name: '客户',
+    meta: { title: '客户', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'personal_customer',
+        name: '个人客户',
+        component: () => import('@/views/customer/personal_customer'),
+        meta: { title: '个人客户', icon: 'table' }
+      },
+      {
+        path: 'team_customer',
+        name: '团队客户',
+        component: () => import('@/views/customer/team_customer'),
+        meta: { title: '团队客户', icon: 'table' }
+      },
+      {
+        path: 'all_customer',
+        name: '所有客户',
+        component: () => import('@/views/customer/all_customer'),
+        meta: { title: '所有客户', icon: 'table' }
+      }
+    ]
+  },
+  {
     path: '/agent',
     component: Layout,
     redirect: '/agent/personal_online',
-    name: '代理',
-    meta: { title: '代理', icon: 'el-icon-s-help' },
+    name: '线上订单',
+    meta: { title: '线上订单', icon: 'el-icon-s-help' },
     children: [
       {
         path: 'personal_online',
-        name: '个人线上业绩',
+        name: '个人线上订单',
         component: () => import('@/views/agent/personal_online'),
-        meta: { title: '个人线上业绩', icon: 'table' }
+        meta: { title: '个人线上订单', icon: 'table' }
       },
       {
         path: 'team_online',
-        name: '团队线上业绩',
+        name: '团队线上订单',
         component: () => import('@/views/agent/team_online'),
-        meta: { title: '团队线上业绩', icon: 'table' }
+        meta: { title: '团队线上订单', icon: 'table' }
       },
       {
         path: 'all_online',
-        name: '线上业绩报表',
+        name: '线上所有订单',
         component: () => import('@/views/agent/all_online'),
-        meta: { title: '线上业绩报表', icon: 'table' }
+        meta: { title: '线上所有订单', icon: 'table' }
       },
       {
         path: 'add_online',
-        name: '添加线上业绩',
+        name: '添加线上订单',
         component: () => import('@/views/agent/add_online'),
-        meta: { title: '添加线上业绩', icon: 'table' }
+        meta: { title: '添加线上订单', icon: 'table' }
       }
       // {
       //   path: 'offline',
