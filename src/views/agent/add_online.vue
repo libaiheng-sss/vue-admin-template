@@ -230,9 +230,7 @@ export default {
       })
     },
     getCheckedNodes() {
-
       const labelData = this.$refs.cascaderAddr.getCheckedNodes()[0]
-      debugger
       this.ruleForm.price = labelData.data.price
       this.ruleForm.productId = labelData.data.id
       getProductAmountTotal({ 'price': this.ruleForm.price, 'count': this.ruleForm.productCount }).then(response => {

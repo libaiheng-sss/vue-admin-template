@@ -2,25 +2,38 @@ import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
-const getDefaultState = () => {
-  return {
-    token: getToken(),
-    name: '',
-    avatar: ''
-  }
-}
+// const getDefaultState = () => {
+//   return {
+//     token: getToken(),
+//     name: '',
+//     avatar: '',
+//     roles: []
+//   }
+// }
 
-const state = getDefaultState()
+// const state = getDefaultState()
+const state = {
+  token: getToken(),
+  name: '',
+  avatar: '',
+  roles: []
+}
 
 const mutations = {
   RESET_STATE: (state) => {
-    Object.assign(state, getDefaultState())
+    state.token = ''
+    state.name = ''
+    state.roles = ''
+    state.avatar = ''
   },
   SET_TOKEN: (state, token) => {
     state.token = token
   },
   SET_NAME: (state, name) => {
     state.name = name
+  },
+  SET_ROLES: (state, roles) => {
+    state.roles = roles
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
@@ -52,11 +65,10 @@ const actions = {
         if (!data) {
           return reject('Verification failed, please Login again.')
         }
-
-        const { username, avatar } = data
-
+        const { username, avatar, roles } = data
         commit('SET_NAME', username)
         commit('SET_AVATAR', avatar)
+        commit('SET_ROLES', roles)
         resolve(data)
       }).catch(error => {
         debugger

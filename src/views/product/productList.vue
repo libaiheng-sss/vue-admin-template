@@ -185,7 +185,6 @@ export default {
     updateProduct() {
       this.updateProductLoading = true
       updateProduct(this.form).then(response => {
-        debugger
         if (response.code === '200') {
           this.$message('修改用户成功')
           this.fetchData()

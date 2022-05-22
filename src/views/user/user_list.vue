@@ -119,14 +119,14 @@ export default {
     return {
       list: null,
       listLoading: true,
-      total: '',
+      total: 0,
       listQuery: {
         page: 1,
         limit: 10,
         phoneNumber: '',
         status: ''
       },
-      currentPage: '',
+      currentPage: 1,
       dialogFormVisible: false,
       addUserLoading: false,
       deleteUserLoading: false,
