@@ -5,6 +5,7 @@ import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
+import { Message } from 'element-ui'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
@@ -19,7 +20,7 @@ router.beforeEach(async(to, from, next) => {
 
   // determine whether the user has logged in
   const hasToken = getToken()
-
+debugger
   if (hasToken) {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
@@ -30,10 +31,18 @@ router.beforeEach(async(to, from, next) => {
       if (hasRoles) {
         next()
       } else {
-        const { roles } = await store.dispatch('user/getInfo')
-        const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
-        router.addRoutes(accessRoutes)
-        next({ ...to, replace: true })
+        try {
+          const { roles } = await store.dispatch('user/getInfo')
+          const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
+          router.addRoutes(accessRoutes)
+          next({ ...to, replace: true })
+        } catch (error) {
+          // remove token and go to login page to re-login
+          await store.dispatch('user/resetToken')
+          Message.error(error || 'Has Error')
+          next(`/login?redirect=${to.path}`)
+          NProgress.done()
+        }
       }
       // const hasGetUserInfo = store.getters.name
       // if (hasGetUserInfo) {

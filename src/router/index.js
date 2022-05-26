@@ -151,6 +151,12 @@ export const asyncRoutes = [
         meta: { title: '用户列表', icon: 'table', roles: ['admin', 'userUserList'] }
       },
       {
+        path: 'teamList',
+        name: '团队列表',
+        component: () => import('@/views/user/team_list'),
+        meta: { title: '团队列表', icon: 'table', roles: ['admin', 'teamList'] }
+      },
+      {
         path: '/roles',
         name: '权限列表',
         component: () => import('@/views/tree/index'),
