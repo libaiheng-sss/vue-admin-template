@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
-import { getToken, setToken } from '@/utils/auth'
+import { getToken, removeToken } from '@/utils/auth'
 import de from "element-ui/src/locale/lang/de";
 
 // create an axios instance
@@ -68,6 +68,10 @@ service.interceptors.response.use(
             location.reload()
           })
         })
+      }
+      // eslint-disable-next-line no-empty
+      if (res.code === '1200') {
+        removeToken()
       }
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
